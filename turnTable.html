@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>大转盘</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+    <meta name="format-detection" content="telephone=no" />
+    <link href="css/public.css" rel="stylesheet" type="text/css">
+    <link href="plugin/swiper/swiper.3.1.7.min.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="plugin/iscroll/iscroll.js"></script>
+    <script type="text/javascript" src="plugin/jquery/jquery-1.11.0.js"></script>
+    <script type="text/javascript" src="plugin/swiper/swiper.3.1.7.min.js"></script>
+    <script src="js/public.js"></script>
+    <script src="js/awardRotate.js"></script>
+    <style>
+    body{background-color: #f83e3f;}
+    .cont-wrap{max-width: 6.36rem;width:100%;margin: 0 auto;}
+    .turn-table-wrap{position: relative;font-size: 0;width:100%;}
+    .turn-table-bg{width:100%;height: 8.26rem;margin: 0 auto;}
+    .turn-table-wrap .turn-table{position: absolute;top:1.8rem;width: 100%;padding: 0 0.1rem;}
+    .turn-table-wrap .t-pointer{width:1.84rem;height: 2.28rem;position: absolute;top: 50%;left: 50%;margin: -1.28rem 0 0 -0.92rem;z-index: 4;}
+    .turn-table-wrap .t-pointer>img{width:100%;height:100%;}
+    .turn-table-wrap .t-rotate{width:100%;z-index: 2;position: relative;text-align: center;}
+    .turn-table-wrap .t-rotate>img{width: 5.9rem;height: 5.9rem;}
+    .table-shadow{width: 4.92rem;position: absolute;bottom:-0.1rem;z-index: 1;left: 50%;margin-left: -2.46rem;}
+
+    .op-btn-wrap{font-size: 0.26rem;width:100%;position: relative;height:0.82rem;margin-bottom:0.4rem;}
+    .op-btn-wrap>div{width:2.6rem;height:0.82rem;text-align: center;line-height: 0.82rem;border: 1px solid #0fc1da;border-radius: 3px;position: absolute;top: 0;}
+    .check_award{background-color: #fff;color:#0fc1da;left: 25%;margin-left:-1.28rem;}
+    .share{background-color: #0fc1da;color:#fff;right: 25%;margin-right:-1.3rem;}
+    .record-wrap{font-size: 0.18rem;width:100%;position: relative;}
+    .record-bg{width: 100%;}
+    .record-title{position: absolute;top:0.5rem;width: 1.9rem;left: 50%;margin-left:-0.95rem;}
+    .award-record{position: absolute;top:1.24rem;left:17%;width: 100%;z-index: 3;}
+    .swiper-container{width:66%;height:1.4rem;}
+    .swiper-slide{text-align: center;font-size: 0.2rem;color: #333;display: -webkit-box;display: -ms-flexbox;display: -webkit-flex;display: flex;-webkit-box-pack: center;-ms-flex-pack: center;-webkit-justify-content: center;justify-content: center;-webkit-box-align: center;-ms-flex-align: center;-webkit-align-items: center;align-items: center;}
+    .swiper-slide>span{display: inline-block;width: 35%;vertical-align: middle;}
+    .swiper-slide>span+span{width: 30%;}
+    .swiper-slide>span+span+span{width: 35%;}
+    .active-rule{color: #0fc1da;font-size: 0.26rem;text-decoration: underline;bottom: 1rem;left: 50%;position: absolute;transform:translateX(-50%);}
+
+    /*弹窗*/
+    .dialog .bg_layer{background: rgba(0,0,0,0.5);width: 100%;top:0;bottom:0;z-index: 3;position: fixed;display:none;}
+    .dialog_show .bg_layer{display:block;}
+    .dialog .dialog_panel{width:5.2rem;background: #fff;z-index: 4;position: fixed;font-size: 0.24rem;text-align: center;border-radius:1px;top: -100%;left:50%;margin-left:-2.6rem;-webkit-animation: animDialog .4s ease-out;animation: animDialog .4s ease-out;-webkit-backface-visibility: hidden;backface-visibility: hidden;-webkit-perspective: 1000;perspective: 1000;-webkit-transform-style: preserve-3d;display:none;min-height: 4rem;}
+    .dialog_show .dialog_panel{top:2.38rem;display:block;}
+    .dialog .close_btn{position: absolute;right: 0.3rem;top: 0.2rem;width: 0.6rem;height: 0.6rem;padding: 0.1rem;z-index: 3;}
+    .dialog .close_btn>img{width:100%;height:100%;}
+    .dialog .cont{padding: 0.64rem 0 0.36rem 0;}
+    /*二维码*/
+    .qcode .qcode_img{width:2.76rem;height:2.76rem;}
+    .qcode .q_msg{margin: 0.26rem 0;font-size: 0.26rem;}
+    /*中奖结果*/
+    .award .dialog_panel{background-color: #fcf0c6;font-size: 0.22rem;}
+    .award .cont{padding:0;}
+    .award .award_bg{width: 5.2rem;min-height: 2.16rem;}
+    .award .a_msg1{color: #333;font-size: 0.36rem;margin-bottom: 0.16rem;}
+    .award .a_msg2{color: #333;font-size: 0.24rem;margin-bottom: 0.34rem;}
+    .award .a_msg2>strong{color: #f83e3f;font-size: 0.26rem;}
+    .award .a_btn_wrap{font-size: 0.26rem;width:100%;position: relative;height:1.66rem;background-color:#fff;display: none;}
+    .award .a_btn_wrap>div{width:1.88rem;height:0.82rem;text-align: center;line-height: 0.82rem;border: 1px solid #0fc1da;border-radius: 3px;position: absolute;top:0.46rem;}
+    .award .a_miss{background-color: #fff;color:#0fc1da;left: 25%;margin-left:-0.94rem;}
+    .award .a_app{background-color: #0fc1da;color:#fff;right: 25%;margin-right:-0.94rem;}
+    .award .a_btn_wrap .a_share{background-color: #0fc1da;color:#fff;width:4.04rem;left:50%;margin-left:-2.02rem;}
+    /*没中奖、中免息券*/
+    .award_type_0{}
+    .award_type_0 .btn_1{display: block;}
+    .award_type_0 .btn_2{display: none;}
+    /*中话费*/
+    .award_type_1{}
+    .award_type_1 .btn_1{display: none;}
+    .award_type_1 .btn_2{display: block;}
+    /*抽奖机会、游戏结束*/
+    .dialog_0 .dialog_panel{background-color: #fcf0c6;font-size: 0.22rem;}
+    .dialog_0 .cont{padding:0;}
+    .dialog_0 .award_bg{width: 5.2rem;min-height: 2.16rem;}
+    .dialog_0 .a_msg1{color: #333;font-size: 0.36rem;margin-bottom: 0.16rem;}
+    .dialog_0 .a_msg2{color: #333;font-size: 0.24rem;margin-bottom: 0.34rem;}
+    .dialog_0 .a_btn_wrap{font-size: 0.26rem;width:100%;position: relative;height:1.66rem;background-color:#fff;}
+    .dialog_0 .a_btn_wrap>div{width:1.88rem;height:0.82rem;text-align: center;line-height: 0.82rem;border: 1px solid #0fc1da;border-radius: 3px;position: absolute;top:0.46rem;}
+    .dialog_0 .a_miss{background-color: #fff;color:#0fc1da;left: 25%;margin-left:-0.94rem;}
+    .dialog_0 .a_app{background-color: #0fc1da;color:#fff;right: 25%;margin-right:-0.94rem;}
+    /*注册*/
+    .register{}
+    .register .dialog_panel{top: 1.5rem;}
+    .register .cont{padding:0 0.4rem 0.4rem;}
+    .register .r_title{font-size: 0.36rem;line-height:1.06rem;color: #333;padding-left: 0.4rem;text-align: left;position: relative;}
+    .register .r_title:after{content:'';position:absolute;background-color: #ddd;height: 1px;width: 100%;transform:scaleY(0.5);-webkit-transform:scaleY(0.5);bottom: 0;left: 0;}
+    .register .input_wrap{position: relative;height: 0.96rem;line-height: 0.96rem;}
+    .register .input_wrap:after{content:'';position:absolute;background-color: #ddd;height: 1px;width: 100%;transform:scaleY(0.5);-webkit-transform:scaleY(0.5);bottom: 0;left: 0;}
+    .register .input_wrap>input[type="text"],.register .input_wrap>input[type="tel"]{width:100%;height:0.4rem;line-height:0.4rem;border:none;font-size: 0.26rem;}
+    .register .phone{}
+    .register .valid_code{padding-right: 1.4rem;}
+    .register .get_valid_code{width: 1.2rem;border: 1px solid #0fc1da;color: #0fc1da !important;background-color: #fff;text-align: center;font-size: 0.18rem;height: 0.5rem;position: absolute;right: 0.18rem;top: 0.23rem;}
+    .register .r_btn{width: 4.1rem;height:0.82rem;line-height:0.82rem;background-color:#0fc1da;font-size: 0.3rem;margin: 0.3rem auto;color: #fff;}
+    .register .r_suc{text-align: center;display: none;}
+    .register .r_suc>img{width: 1.6rem;height: 1.6rem;margin: 0.8rem 0 0.1rem 0;}
+    .register .r_suc>p{font-size: 0.36rem;color: #333;margin: 0.1rem 0 0.6rem 0;}
+
+    .register .radio_wrap{}
+    .register .radio_wrap>div{float:left;position: relative;}
+    .register .radio_wrap>div:last-child{margin-left: 0.2rem;}
+    .register .radio_wrap>div>span{vertical-align: middle;display: inline-block;}
+    .register .radio_wrap .r_radio{width: 100%;height: 100%;position: absolute;top: 0;left: 0;z-index: 1;margin: 0;border: none;background:rgba(0,0,0,0);}
+    .register .r_cicle{width:20px;height:20px;border: 1px solid #aaa;border-radius: 100%;margin-right: 0.08rem;position: relative;}
+    .register .r_radio:checked+.r_cicle{border: 1px solid #0fc1da;}
+    .register .r_radio:checked+.r_cicle:after{content:'';width:14px;height: 14px;border-radius: 100%;background-color: #0fc1da;position: absolute;top:2px;left:2px; }
+    .register .company_wrap{text-align: left;color: #999;font-size: 0.26rem;}
+    .register .company_wrap:before{content: '';position: absolute;border-color: #999;border-style: solid;border-width: 2px 2px 0 0;top:50%;width: 10px;height: 10px;display: block;transform: rotate(45deg);right: 10px;margin-top: -5px;}
+    .register .company{position: absolute;top: 0;left: 0;}
+    /*规则*/
+    .rule{}
+    .rule .dialog_panel{width: 5.88rem;margin-left:-2.94rem;height:6.6rem;top: 1.1rem;}
+    .rule .z-txt{background-color: #fff;width:100%;border-radius: 0.1rem;z-index: 1;-webkit-backface-visibility: hidden;backface-visibility: hidden;-webkit-perspective: 1000;perspective: 1000;-webkit-transform-style: preserve-3d;transform-style: preserve-3d;-webkit-transition-duration: 400ms;transition-duration: 400ms;position: absolute;top: 0.44rem;bottom: 0;left:0;overflow: hidden;padding:0 0.44rem 0 0.5rem;text-align: left;}
+    .rule .z-txt>div{padding-bottom:0.3rem;}
+    .rule .title{color: #333;font-size: 0.4rem;text-align: center;margin:0 0 0.34rem;font-weight: bold;}
+    .rule .z-item{color: #333;font-size: 0.26rem;margin: 0.16rem 0;}
+    /*分享提示*/
+    .share_tips{}
+    .share_tips .bg_layer{background: rgba(0,0,0,0.7);}
+    .share_tips .bg_layer{z-index: 5;}
+    .share_tips .tips_wrap{position: absolute;top:1.1rem;right:0.2rem;width: 1.8rem;z-index: 5;font-size: 0;display:none;}
+    .dialog_show .tips_wrap{display:block;}
+    .share_tips .tips_wrap>p{text-align: center;font-size: 0.26rem;color: #fff;}
+    .share_tips .img_arrow{width:1.02rem;position: absolute;z-index: 999;-webkit-animation: start 1.5s infinite ease;bottom: 0.5rem;right: 0.1rem;}
+    @-webkit-keyframes start {
+      0%{-webkit-transform: translate(-8px,8px);}
+      100% {-webkit-transform: translate(6px,-6px);}
+    }
+    @keyframes start {
+      0%{transform: translate(-8px,8px);}
+      100% {transform: translate(6px,-6px);}
+    }
+
+    /*选择企业*/
+    .tongxunlu{position: fixed;top:0;bottom:0;left:0;right:0;overflow-y: auto;overflow-x: hidden;z-index: 12;display: none;font-size: 14px;}
+    .tongxunlu-show{display: block;}
+    .tongxunlu .slider{background-color: #fff;width:100%;position: fixed;top:44px;bottom:0;z-index: 1;-webkit-backface-visibility: hidden;backface-visibility: hidden;-webkit-perspective: 1000;perspective: 1000;-webkit-transform-style: preserve-3d;-webkit-transition-duration: 400ms;}
+    .tongxunlu .slider ul {list-style: none; }
+    .tongxunlu .slider-content {}
+    .tongxunlu .slider-content li {width: 100%; }
+    .tongxunlu .slider-content ul li a { padding: 8px 10px; display: block; text-transform: capitalize;color: #000;position: relative;}
+    .tongxunlu .slider-content ul li a:after{content: " ";position: absolute;left:10px;bottom: 0;width: 100%;height: 1px;border-bottom: 1px solid #D9D9D9;color: #D9D9D9;-webkit-transform-origin: 0 100%;transform-origin: 0 100%;-webkit-transform: scaleY(0.5);transform: scaleY(0.5);}
+    .tongxunlu .slider-content ul li:last-child a:after{display: none;}
+    .tongxunlu .slider-content ul li a:hover { background: #f3faff; border-color: #d5ebf9; }
+    .tongxunlu .slider-content .title { padding: 5px 0; text-indent: 10px; background: #f2f2f2; color: #000; width: 100%;display: block;font-weight: bold; text-transform: uppercase; }
+    .tongxunlu .slider-content .selected .title { background: #f2f2f2; }
+    .tongxunlu .slider-nav {position: fixed; right: 0; top:44px; background: #fff; min-height: 250px;height:100%;width: 24px;z-index:4;}
+    .tongxunlu .slider-nav ul {padding: 5px 0;position: absolute;top: 50%;right: 0;transform: translateY(-50%);}
+    .tongxunlu .slider-nav li a {padding: 3px 5px; line-height: 13px; text-align: center; color: #007aff; font-weight: bold; display: block; text-transform: uppercase; cursor: pointer;font-size: 14px;}
+    .tongxunlu .slider #debug { position: absolute; bottom: 0; left: 0; padding: 5px; background: #000; color: #fff; }
+    .tongxunlu .slider .arrow { font-size: 0px; line-height: 0%; width: 0px; border-bottom: 8px solid #fff; border-left: 5px solid #333; border-right: 5px solid #333; position: relative; top: 5px; }
+    .tongxunlu .slider .down { border-bottom: none; border-top: 8px solid #fff; top: 15px; }
+    .tongxunlu .slider .slide-up,.tongxunlu .slider .slide-down { height: 20px; background: #333; text-align: center; cursor: pointer; float: right; width: 100%; position: relative; }
+    .tongxunlu .weui_search_bar {position: fixed;top:0;padding: 8px 10px;display: -webkit-box;display: -webkit-flex;display: -ms-flexbox;display: flex;box-sizing: border-box;background-color: #c9c9ce;z-index: 6;font-size: 14px;width: 100%;}
+    .tongxunlu .weui_search_bar:before {content: " ";position: absolute;left: 0;top: 0;width: 100%;height: 1px;border-top: 1px solid #C7C7C7;color: #C7C7C7;-webkit-transform-origin: 0 0;transform-origin: 0 0;-webkit-transform: scaleY(0.5);transform: scaleY(0.5);}
+    .tongxunlu .weui_search_bar:after {content: " ";position: absolute;left: 0;bottom: 0;width: 100%;height: 1px;border-bottom: 1px solid #C7C7C7;color: #C7C7C7;-webkit-transform-origin: 0 100%;transform-origin: 0 100%;-webkit-transform: scaleY(0.5);transform: scaleY(0.5);}
+    .tongxunlu .weui_search_bar.weui_search_focusing .weui_search_text {display: none !important;}
+    .tongxunlu .weui_search_inner {position: relative;padding-left: 30px;padding-right: 30px;height: 100%;width: 100%;box-sizing: border-box;z-index: 1;}
+    .tongxunlu .weui_search_inner .weui_icon_search {position: absolute;left: 10px;top: -2px;line-height: 28px;}
+    .tongxunlu .weui_search_inner .weui_search_input {padding: 4px 0;width: 100%;height: 1.42857143em;border: 0;font-size: 14px;line-height: 1.42857143em;box-sizing: content-box;background: transparent;}
+    .tongxunlu .weui_search_inner .weui_icon_clear {position: absolute;top: -2px;right: 0;padding: 0 10px;line-height: 28px;}
+    .tongxunlu .weui_search_text {position: absolute;top: 1px;right: 1px;bottom: 1px;left: 1px;z-index: 2;border-radius: 3px;text-align: center;color: #9b9b9b;background: #fff;}
+    .tongxunlu .weui_search_outer {position: relative;-webkit-box-flex: 1;-webkit-flex: auto;-ms-flex: auto;flex: auto;background-color: #EFEFF4;border-radius: 10px;}
+    .tongxunlu .weui_search_cancel {display: none;margin-left: 10px;line-height: 28px;white-space: nowrap;color: #007aff;}
+    .tongxunlu .search-result{background-color: #fff;width:100%;position: fixed;top:44px;bottom:0;z-index: 5;-webkit-backface-visibility: hidden;backface-visibility: hidden;-webkit-perspective: 1000;perspective: 1000;-webkit-transform-style: preserve-3d;-webkit-transition-duration: 400ms;display: none;}
+    .tongxunlu .search-result-show{display: block;}
+    .tongxunlu .search-result ul li a { padding: 8px 10px; display: block; text-transform: capitalize;color: #000;position: relative;}
+    .tongxunlu .search-result ul li a:after{content: " ";position: absolute;left:10px;bottom: 0;width: 100%;height: 1px;border-bottom: 1px solid #D9D9D9;color: #D9D9D9;-webkit-transform-origin: 0 100%;transform-origin: 0 100%;-webkit-transform: scaleY(0.5);transform: scaleY(0.5);}
+    .tongxunlu .search-result ul li:last-child a:after{display: none;}
+    .tongxunlu .back-btn{width: 28px;height: 28px;position: relative;}
+    .tongxunlu .back-btn:after {content: " ";display: inline-block;-webkit-transform: rotate(45deg);transform: rotate(45deg);height: 6px;width: 6px;border-width:0 0 2px 2px;border-color: #fff;border-style: solid;position: relative;top: -2px;position: absolute;top: 50%;right: 12px;margin-top: -4px;}
+    
+    </style>
+    <script type="text/javascript">
+        var aScroll;
+        function loaded() {
+            aScroll = new IScroll('#body-wrapper',{
+                scrollbars: true,
+                mouseWheel: true,
+                interactiveScrollbars: true,
+                shrinkScrollbars: 'scale',
+                fadeScrollbars: true,click: true 
+            });
+        }
+        document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
+    </script>
+</head>
+<body onload="loaded()">
+    <article id="body-wrapper">
+        <div>
+            <div class="cont-wrap">
+                <div class="turn-table-wrap">
+                    <img class="turn-table-bg" src="images/table-bg.png" alt="">
+                    <div class="turn-table">
+                        <div class="t-pointer"><img src="images/pointer.png" alt=""></div>
+                        <div class="t-rotate" id="rotate"><img src="images/table.png" alt=""></div>
+                        <img class="table-shadow" src="images/table-shadow.png" alt="">
+                    </div>
+                </div>
+                <div class="op-btn-wrap">
+                    <div class="check_award">我的奖品</div>
+                    <div class="share">申请借款</div>
+                </div>
+                <div class="record-wrap">
+                    <img class="record-bg" src="images/record-bg.png" alt="">
+                    <img class="record-title" src="images/record-title.png" alt="">
+                    <div class="award-record swiper-container">
+                        <div class="swiper-wrapper">
+                            <div class="swiper-slide"><span>136****9212</span><span>获得一等奖</span><span>iPhone7手机</span></div>
+                            <div class="swiper-slide"><span>158****7149</span><span>获得二等奖</span><span>三期免息券</span></div>
+                            <div class="swiper-slide"><span>139****3189</span><span>获得三等奖</span><span>10元话费券</span></div>
+                        </div>
+                    </div>
+                    <a class="active-rule" href="javascript:;">活动规则</a>
+                </div>
+            </div>
+        </div>
+    </article>
+    <!-- 二维码 -->
+    <div class="dialog qcode">
+        <div class="bg_layer"></div>
+        <div class="dialog_panel">
+            <div class="close_btn"><img src="images/close-btn.png" alt=""></div>
+            <div class="cont">
+                <img class="qcode_img" src="images/qcode.png" alt="">
+                <p class="q_msg">长按二维码，查看我的奖品</p>
+            </div>
+        </div>
+    </div>
+    <!-- 中奖结果 -->
+    <div class="dialog award">
+        <div class="bg_layer"></div>
+        <div class="dialog_panel">
+            <div class="close_btn"><img src="images/close-btn.png" alt=""></div>
+            <div class="cont">
+                <img class="award_bg" src="images/award-bg-1.png" alt="">
+                <p class="a_msg1">谢谢参与</p>
+                <p class="a_msg2">再接再厉，不要灰心，祝您好运！</p>
+                <div class="a_btn_wrap btn_1">
+                    <div class="a_miss">错过机会</div>
+                    <div class="a_app">马上申请</div>
+                </div>
+                <div class="a_btn_wrap btn_2">
+                    <div class="a_share">马上分享</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 抽奖机会用完-->
+    <div class="dialog chance dialog_0">
+        <div class="bg_layer"></div>
+        <div class="dialog_panel">
+            <div class="close_btn"><img src="images/close-btn.png" alt=""></div>
+            <div class="cont">
+                <img class="award_bg" src="images/award-bg-3.png" alt="">
+                <p class="a_msg1">很遗憾</p>
+                <p class="a_msg2">(⊙o⊙)…抽奖机会已经用完了</p>
+                <div class="a_btn_wrap btn_1">
+                    <div class="a_miss">我的奖品</div>
+                    <div class="a_app">申请借款</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 获取抽奖机会-->
+    <div class="dialog chance_1 dialog_0">
+        <div class="bg_layer"></div>
+        <div class="dialog_panel">
+            <div class="close_btn"><img src="images/close-btn.png" alt=""></div>
+            <div class="cont">
+                <img class="award_bg" src="images/award-bg-2.png" alt="">
+                <p class="a_msg1">获取抽奖机会</p>
+                <p class="a_msg2">测测您的借款额度，即可获得<strong>1</strong>次机会</p>
+                <div class="a_btn_wrap btn_1">
+                    <div class="a_miss">错过机会</div>
+                    <div class="a_app">测测看</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 活动结束 -->
+    <div class="dialog game_over dialog_0">
+        <div class="bg_layer"></div>
+        <div class="dialog_panel">
+            <div class="close_btn"><img src="images/close-btn.png" alt=""></div>
+            <div class="cont">
+                <img class="award_bg" src="images/award-bg-1.png" alt="">
+                <p class="a_msg1">活动已结束</p>
+                <p class="a_msg2">谢谢支持</p>
+                <div class="a_btn_wrap btn_1">
+                    <div class="a_miss">返回</div>
+                    <div class="a_app">申请借款</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 注册 -->
+    <div class="dialog register">
+        <div class="bg_layer"></div>
+        <div class="dialog_panel">
+            <div class="close_btn"><img src="images/close-btn.png" alt=""></div>
+            <p class="r_title">注册有礼</p>
+            <div class="cont">
+                <form action="" class="r_form">
+                    <div class="input_wrap radio_wrap">
+                        <div>合作企业：</div>
+                        <div><input type="radio" class="r_radio" name="company" checked="checked" data-flag='true'><span class="r_cicle active"></span><span>是</span></div>
+                        <div><input type="radio" class="r_radio" name="company" data-flag='false'><span class="r_cicle"></span><span>否</span></div>
+                    </div>
+                    <div class="input_wrap company_wrap"><div class="company">选择所属企业</div><input type="hidden" name="company_id"></div>
+                    <div class="input_wrap"><input class="phone" type="tel" placeholder="手机号码" pat='/^(((13[0-9]{1})|(15[0-9]{1})|(17[0-9]{1})|(18[0-9]{1}))+\d{8})$/'></div>
+                    <div class="input_wrap"><input class="valid_code" type="text" placeholder="手机验证码"><input class="get_valid_code" type="button" value="获取"></div>
+                    <div class="r_btn com_btn_1">马上注册</div>  
+                </form>
+                <div class="r_suc">
+                    <img src="images/r_suc.png" alt="">
+                    <p>恭喜您，注册成功</p>
+                    <div class="r_btn com_btn_2">马上抽奖</div> 
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 规则 -->
+    <div class="dialog rule">
+        <div class="bg_layer"></div>
+        <div class="dialog_panel">
+            <div class="close_btn"><img src="images/close-btn.png" alt=""></div>
+            <div class="cont">
+                <div class="z-txt">
+                    <div>
+                        <p class="title">活动规则</p>
+                        <p class="z-item">1、活动时间：2016年10月21日-2016年12月31日；</p>
+                        <p class="z-item">2、活动时间内，每位新注册用户总共有2次抽奖机会；</p>
+                        <p class="z-item">3、用户抽奖获得的免息券，只能用于首次借款；</p>
+                        <p class="z-item">4、用户抽奖获得的10元话费，将会在2个工作日内，充值到您注册员动力平台的手机号码；</p>
+                        <p class="z-item">5、本活动最终解释权利归员动力平台所有。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 分享提示 -->
+    <div class="dialog share_tips">
+        <div class="bg_layer"></div>
+        <div class="tips_wrap">
+            <img class="img_arrow" src="images/share-tips.png" alt="">
+            <p>分享给好友</p>
+        </div>
+    </div>
+    <!-- 通讯录 -->
+    <div class="tongxunlu">
+        <div class="weui_search_bar" id="search_bar">
+            <div class="back-btn"></div>
+                    <form action="#" class="weui_search_outer">
+                <div class="weui_search_inner">
+                    <i class="weui_icon_search"></i>
+                    <input type="search" class="weui_search_input" id="search_input" placeholder="搜索" required="">
+                    <a href="javascript:" class="weui_icon_clear" id="search_clear"></a>
+                </div>
+                <label for="search_input" class="weui_search_text" id="search_text">
+                    <i class="weui_icon_search"></i>
+                    <span>搜索</span>
+                </label>
+            </form>
+            <a href="javascript:" class="weui_search_cancel" id="search_cancel">取消</a>
+        </div>
+        <div id="slider">
+            <ul class="slider-content">
+                <li id="b" class="selected"><a name="b" class="title">B</a>
+                    <ul>
+                        <li><a data_id="512" class="name-item">北京大大集团</a></li>
+                        <li><a data_id="515" class="name-item">北京大大集团广州分公司</a></li>
+                    </ul>
+                </li>
+                    <li id="g"><a name="g" class="title">G</a>
+                    <ul>
+                        <li><a data_id="508" class="name-item">广州潮有限责任公司</a></li>
+                    </ul>
+                </li>
+                <li id="s"><a name="s" class="title">S</a>
+                    <ul>
+                        <li><a data_id="504" class="name-item">深圳市佰仟金融服务有限公司</a></li>
+                        <li><a data_id="509" class="name-item">深圳市人人科技有限公司</a></li>
+                    </ul>
+                </li>
+                <li id="b" class="selected"><a name="b" class="title">B</a>
+                    <ul>
+                        <li><a data_id="512" class="name-item">北京大大集团</a></li>
+                        <li><a data_id="515" class="name-item">北京大大集团广州分公司</a></li>
+                    </ul>
+                </li>
+                    <li id="g"><a name="g" class="title">G</a>
+                    <ul>
+                        <li><a data_id="508" class="name-item">广州潮有限责任公司</a></li>
+                    </ul>
+                </li>
+                <li id="s"><a name="s" class="title">S</a>
+                    <ul>
+                        <li><a data_id="504" class="name-item">深圳市佰仟金融服务有限公司</a></li>
+                        <li><a data_id="509" class="name-item">深圳市人人科技有限公司</a></li>
+                    </ul>
+                </li>
+                <li id="b" class="selected"><a name="b" class="title">B</a>
+                    <ul>
+                        <li><a data_id="512" class="name-item">北京大大集团</a></li>
+                        <li><a data_id="515" class="name-item">北京大大集团广州分公司</a></li>
+                    </ul>
+                </li>
+                    <li id="g"><a name="g" class="title">G</a>
+                    <ul>
+                        <li><a data_id="508" class="name-item">广州潮有限责任公司</a></li>
+                    </ul>
+                </li>
+                <li id="s"><a name="s" class="title">S</a>
+                    <ul>
+                        <li><a data_id="504" class="name-item">深圳市佰仟金融服务有限公司</a></li>
+                        <li><a data_id="509" class="name-item">深圳市人人科技有限公司</a></li>
+                    </ul>
+                </li>
+                <li id="b" class="selected"><a name="b" class="title">B</a>
+                    <ul>
+                        <li><a data_id="512" class="name-item">北京大大集团</a></li>
+                        <li><a data_id="515" class="name-item">北京大大集团广州分公司</a></li>
+                    </ul>
+                </li>
+                    <li id="g"><a name="g" class="title">G</a>
+                    <ul>
+                        <li><a data_id="508" class="name-item">广州潮有限责任公司</a></li>
+                    </ul>
+                </li>
+                <li id="s"><a name="s" class="title">S</a>
+                    <ul>
+                        <li><a data_id="504" class="name-item">深圳市佰仟金融服务有限公司</a></li>
+                        <li><a data_id="509" class="name-item">深圳市人人科技有限公司</a></li>
+                    </ul>
+                </li>
+                <li id="8"><a name="8" class="title">8</a>
+                    <ul>
+                        <li><a data_id="510" class="name-item">8888</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <div class="search-result">
+            <ul></ul>
+        </div>
+    </div>
+    <script>
+        $(function (){
+            /*中奖纪录轮播*/
+            var swiper = new Swiper('.award-record', {
+                direction: 'vertical',
+                autoplay: 2000,
+                autoplayDisableOnInteraction: false,
+                loop : true,
+                slidesPerView: 3,
+            });
+            /*转盘*/
+            var rotateTimeOut = function (){
+                $('#rotate').rotate({
+                    angle:0,
+                    animateTo:2160,
+                    duration:4000,
+                    callback:function (){
+                        alert('网络超时，请检查您的网络设置！');
+                    }
+                });
+            };
+            var rotateFlag = false;
+
+            var rotateFn = function (awards, angles, txt){
+                rotateFlag = !rotateFlag;
+                $('#rotate').stopRotate();
+                $('#rotate').rotate({
+                    angle:0,
+                    animateTo:angles+1800,
+                    duration:4000,
+                    callback:function (){
+                        rotateFlag = !rotateFlag;
+                        console.log(txt);
+                        showAwardResult(txt);
+                    }
+                });
+            };
+            $('.t-pointer').on('click',function (){
+                if(rotateFlag)return;
+                var randomNum = creatRandomNum(0,6);
+                //randomNum = 1;
+                switch (randomNum) {
+                    case 0:
+                        //rotateFn(0, 360, '1,一等奖iPhone7');
+                        break;
+                    case 1:
+                        rotateFn(1, 300, [1,'谢谢参与','再接再厉，不要灰心，祝您好运！']);
+                        break;
+                    case 2:
+                        rotateFn(2, 240, [3,'恭喜您,获得获得免息券2期','每期最高减免利息<strong>￥3000.00</strong>']);
+                        break;
+                    case 3:
+                        rotateFn(3, 180, [4,'恭喜您,获得获得免息券1期','每期最高减免利息<strong>￥3000.00</strong>']);
+                        break;
+                    case 4:
+                        rotateFn(4, 120, [2,'恭喜您,获得获得免息券3期','每期最高减免利息<strong>￥3000.00</strong>']);
+                        break;
+                    case 5:
+                        rotateFn(5, 60, [5,'恭喜您,获得10元话费','分享喜悦给好友']);
+                        break;
+                }
+            });
+        });
+        /*分享*/
+        $('.a_share').on('click',function(){
+            $('.share_tips').addClass('dialog_show');
+        });
+        $('.share_tips .bg_layer').on('click',function(){
+            $('.share_tips').removeClass('dialog_show');
+        });
+        /*二维码*/
+        $('.check_award').on('click',function(){
+            $('.qcode').addClass('dialog_show');
+        });
+        $('.dialog .close_btn,.dialog .a_miss').on('click',function(){
+            $('.dialog').removeClass('dialog_show');
+        });
+        /*注册*/
+        $('.share').on('click',function(){
+            $('.register').addClass('dialog_show');
+        });
+        //马上注册
+        $('.register .com_btn_1').on('click',function(){
+            var phone = $('.register .phone').val(),
+            pattern = eval($('.register .phone').attr('pat')),
+            validCode = $('.register .valid_code').val();
+            /*企业*/
+            var companyFlag = $('.r_radio:checked').attr('data-flag'),
+            company = $('.register .company').text();
+            
+            if(companyFlag=='true'){
+                if(company=='选择所属企业'){
+                    tips('请选择所属企业',1500);
+                    return false;
+                }
+            }
+            /*手机号*/
+            if(phone==''){
+                tips('请填写手机号',1500);
+                return false;
+            }else if(!pattern.test(phone)){
+                tips('手机号格式不对',1500);
+                return false;
+            }
+            /*验证码*/
+            if(validCode==''){
+                tips('请填写验证码',1500);
+                return false;
+            }else{
+                $('.r_form').hide();
+                $('.r_suc').show();
+                /**注册逻辑**/
+                console.log('register..');
+            }
+        });
+        //马上抽奖
+        $('.register .com_btn_2').on('click',function(){
+            $('.register').removeClass('dialog_show');
+            //$('.r_form').show();
+            //$('.r_suc').hide();
+        });
+        /*获取验证码*/
+        $('.get_valid_code').on('click',function(){
+            var phone = $('.register .phone').val();
+            var pattern = eval($('.register .phone').attr('pat'));
+
+            if(phone==''){
+                tips('请填写手机号',1500);
+            }else if(!pattern.test(phone)){
+                tips('手机号格式不对',1500);
+            }else{
+                getCode(this,'.phone',60,function(){
+                    /**发送验证码**/
+                    console.log('send msg..');
+                });
+            }
+        });
+        /*活动规则*/
+        $('.active-rule').on('click',function(){
+            var dialogScroll = new IScroll('.z-txt', {
+                probeType: 3,
+                scrollbars: true,
+                mouseWheel: true,
+                interactiveScrollbars: true,
+                shrinkScrollbars: 'scale',
+                fadeScrollbars: true,click:true
+            });
+            $('.rule').addClass('dialog_show');
+            dialogScroll.refresh();
+        });
+        /*中奖结果*/
+        function showAwardResult(arr){
+            var obj = $('.award');
+            var result = arr;
+            var lv = '';
+            var nextBtnTxt = '领取奖品';
+          
+            if(result[0]>0){
+                obj.find('.award_bg').attr('src','images/award-bg-0.png');
+            }else{
+                obj.find('.award_bg').attr('src','images/award-bg-1.png');
+            }
+            obj.find('.a_msg1').html(result[1]);
+            obj.find('.a_msg2').html(result[2]);
+
+            if(result[0]==2||result[0]==3||result[0]==4){//免息券
+                obj.find('.a_miss').text('错过机会');
+                obj.find('.award_bg').attr('src','images/award-bg-0.png');
+                obj.addClass('award_type_0').removeClass('award_type_1');
+            }else if(result[0]==5){//话费
+                obj.find('.award_bg').attr('src','images/award-bg-0.png');
+                obj.addClass('award_type_1').removeClass('award_type_0');
+            }else if(result[0]==1){//没中奖
+                obj.find('.a_miss').text('继续抽奖');
+                obj.find('.award_bg').attr('src','images/award-bg-1.png');
+                obj.addClass('award_type_0').removeClass('award_type_1');
+            }
+            obj.addClass('dialog_show');
+        }
+        function creatRandomNum(n, m){
+            return Math.floor(Math.random()*(m-n+1)+n);
+        }
+
+        /**/
+        // $.ajax({
+        //     type: "GET",
+        //     url: "http://ydl.yiqitansuo.com/m/bigwheel/test",
+        //     data: {},
+        //     dataType: "json",
+        //     success: function(data){
+        //     },
+        //     error:function(data){
+
+        //     },
+        //     complete:function(data){
+
+        //     }
+        // });
+        
+        /*合作企业*/
+        $('.r_radio').on('click',function(){
+            var flag = $(this).attr('data-flag');
+            if(flag=='true'){
+                $('.company_wrap').show();
+            }else{
+                $('.company_wrap').hide();
+            }
+        });
+        /*选择企业*/
+        var scroll1,scroll2;
+        $('.company_wrap').on('click',function(){
+            $('.tongxunlu').addClass('tongxunlu-show');
+            $('#slider').sliderNav();
+            scroll1 = loadedScroll('#slider');
+        });
+        $('.back-btn').on('click',function(){
+            $('.tongxunlu').removeClass('tongxunlu-show');
+        });
+        $('#search_input').on('focus', function () {
+            var $weuiSearchBar = $('#search_bar');
+            $weuiSearchBar.addClass('weui_search_focusing');
+
+            $('.search-result').addClass('search-result-show');
+        }).on('blur', function () {
+            var $weuiSearchBar = $('#search_bar');
+            $weuiSearchBar.removeClass('weui_search_focusing');
+            if ($(this).val()) {
+                $('#search_text').hide();
+                $('.search-result').addClass('search-result-show');
+            } else {
+                $('#search_text').show();
+                $('.search-result').removeClass('search-result-show');
+                $('.search-result>ul').empty();
+            }
+        }).on('input', function () {
+            var $searchShow = $("#search_show");
+            if ($(this).val()) {
+                $searchShow.show();
+                $('.search-result').addClass('search-result-show');
+                var searchResultScroll = loadedScroll('.search-result');
+                var val = $(this).val();
+                var ulWrap = $('.search-result>ul');
+                ulWrap.empty();
+                $('#slider .name-item').each(function(){
+                    if($(this).text().toUpperCase().indexOf(val.toUpperCase())>=0){
+                        var li = $('<li><a data_id="'+$(this).attr('data_id')+'" class="name-item">'+$(this).text()+'</a></li>');
+                        ulWrap.append(li);  
+                        li.children('.name-item').on('click',function(){
+                            $("input[name='company_id']").val($(this).attr('data_id'));
+                            $(".company").text($(this).text());
+                            $('.tongxunlu').removeClass('tongxunlu-show');
+                        });
+                    }
+                });
+                searchResultScroll.refresh();
+            } else {
+                $searchShow.hide();
+                $('.search-result').removeClass('search-result-show');
+                $('.search-result>ul').empty();
+            }
+        });
+        $('#slider .name-item').on('click',function(){
+            $("input[name='company_id']").val($(this).attr('data_id'));
+            $(".company").text($(this).text());
+            $('.tongxunlu').removeClass('tongxunlu-show');
+        });
+        $('#search_cancel').on('touchend' , function () {
+            $("#search_show").hide();
+            $('.search-result').removeClass('search-result-show');
+            $('.search-result>ul').empty();
+            $('#search_input').val('');
+        })
+        $('#search_clear').on('touchend', function () {
+            $("#search_show").hide();
+            $('.search-result').removeClass('search-result-show');
+            $('.search-result>ul').empty();
+            $('#search_input').val('');
+        });
+        function loadedScroll(str) {
+            var slider = new IScroll(str, {
+                probeType: 3,
+                scrollbars: true,
+                mouseWheel: true,
+                interactiveScrollbars: true,
+                shrinkScrollbars: 'scale',
+                fadeScrollbars: true,click:true
+            });
+            return slider;
+        }
+        $.fn.sliderNav = function(options) {
+            var defaults = { items: ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"], debug: false, height: null, arrows: true};
+            var opts = $.extend(defaults, options); var o = $.meta ? $.extend({}, opts, $$.data()) : opts; var slider = $(this); $(slider).addClass('slider');
+
+            $('.slider-content li:first', slider).addClass('selected');
+            $(slider).after('<div class="slider-nav"><ul></ul></div>');
+            $('.slider-nav ul').empty();
+            for(var i in o.items) 
+                $('.slider-nav ul').append("<li><a alt='#"+o.items[i]+"'>"+o.items[i]+"</a></li>");
+                
+            var height = $('.slider-nav', slider).height();
+
+            if(o.height) height = o.height;
+            //$('.slider-nav', slider).css('height',$(window).height()-$('#search_bar').outerHeight());
+            $('.slider-nav').css('height',$(window).height()-44);
+
+            if(o.debug) $(slider).append('<div id="debug">Scroll Offset: <span>0</span></div>');
+
+            $('.slider-nav a').click(function(event){
+                var target = $(this).attr('alt');
+                /*var cOffset = $('.slider-content', slider).offset().top;
+                var tOffset = $('.slider-content '+target, slider).offset().top;
+                var pScroll = (tOffset - cOffset-$('body').scrollTop());*/
+                //$('body').stop().animate({'scrollTop': pScroll + 'px'});
+                if($('.slider-content '+target)[0]){
+                    scroll1.scrollToElement($('.slider-content '+target)[0],500);
+                }
+            });
+        };
+    </script>
+</body>
+</html>
