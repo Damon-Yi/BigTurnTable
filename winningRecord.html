@@ -7,12 +7,11 @@
     <meta name="format-detection" content="telephone=no" />
     <link href="css/public.css" rel="stylesheet" type="text/css">
     <script type="text/javascript" src="plugin/iscroll/iscroll.js"></script>
-    <script type="text/javascript" src="plugin/zepto/zepto.js"></script>
-    <script type="text/javascript" src="plugin/zepto/touch.js"></script>
+    <script type="text/javascript" src="plugin/jquery/jquery-1.11.0.js"></script>
     <script src="js/public.js"></script>
     <style>
         body{background-color: #f0eff5;}
-        #body-wrapper{top: 0.2rem;}
+        #body-wrapper{top: 0.2rem;bottom: 2rem;}
         .winning_list{font-size: 0.24rem;background-color: #fff;}
         .winning_list li{padding: 0 0.26rem;position: relative;}
         .winning_list li:after {content: " ";position: absolute;left: 0;bottom: 0;width: 100%;height: 1px;border-bottom: 1px solid #D9D9D9;color: #D9D9D9;-webkit-transform-origin: 0 100%;transform-origin: 0 100%;-webkit-transform: scaleY(0.5);transform: scaleY(0.5);}
@@ -22,6 +21,23 @@
         .winning_list li .w_status.un_use{background-color: #e24848;color: #fff;}
         .winning_list li .w_status.used{background-color: #ddd;}
         .winning_list li .w_date{font-size: 0.2rem;color:#999;float: right;height: 0.82rem;line-height: 0.82rem;clear: both;}
+
+        .user_rules{color: #0bc4d8;font-size: 0.26rem;position:absolute;bottom: 1rem;left: 50%;transform: translateX(-50%);text-decoration: underline;}
+        /*弹窗*/
+        .dialog .bg_layer{background: rgba(0,0,0,0.5);width: 100%;top:0;bottom:0;z-index: 3;position: fixed;display:none;}
+        .dialog_show .bg_layer{display:block;}
+        .dialog .dialog_panel{width:5.2rem;background: #fff;z-index: 4;position: fixed;font-size: 0.24rem;text-align: center;border-radius:1px;top: -100%;left:50%;margin-left:-2.6rem;-webkit-animation: animDialog .4s ease-out;animation: animDialog .4s ease-out;-webkit-backface-visibility: hidden;backface-visibility: hidden;-webkit-perspective: 1000;perspective: 1000;-webkit-transform-style: preserve-3d;display:none;min-height: 4rem;}
+        .dialog_show .dialog_panel{top:2.38rem;display:block;}
+        .dialog .close_btn{position: absolute;right: 0.3rem;top: 0.2rem;width: 0.6rem;height: 0.6rem;padding: 0.1rem;z-index: 3;}
+        .dialog .close_btn>img{width:100%;height:100%;}
+        .dialog .cont{padding: 0.64rem 0 0.36rem 0;}
+        /*规则*/
+        .rule{}
+        .rule .dialog_panel{width: 5.88rem;margin-left:-2.94rem;height:7.6rem;top: 1.1rem;}
+        .rule .z-txt{background-color: #fff;width:100%;border-radius: 0.1rem;z-index: 1;-webkit-backface-visibility: hidden;backface-visibility: hidden;-webkit-perspective: 1000;perspective: 1000;-webkit-transform-style: preserve-3d;transform-style: preserve-3d;-webkit-transition-duration: 400ms;transition-duration: 400ms;position: absolute;top: 0.44rem;bottom: 0;left:0;overflow: hidden;padding:0 0.44rem 0 0.5rem;text-align: left;}
+        .rule .z-txt>div{padding-bottom:0.3rem;}
+        .rule .title{color: #333;font-size: 0.4rem;text-align: center;margin:0 0 0.34rem;font-weight: bold;}
+        .rule .z-item{color: #333;font-size: 0.26rem;margin: 0.16rem 0;}
     </style>
     <script type="text/javascript">
         var aScroll;
@@ -142,8 +158,46 @@
             </ul>
         </div>
     </article>
+    <a href="javascript:;" class="user_rules">使用规则</a>
+    <!-- 规则 -->
+    <div class="dialog rule">
+        <div class="bg_layer"></div>
+        <div class="dialog_panel">
+            <div class="close_btn"><img src="images/close-btn.png" alt=""></div>
+            <div class="cont">
+                <div class="z-txt">
+                    <div>
+                        <p class="title">使用规则</p>
+                        <p class="z-item">1、用户申请借款，期数需大于或等于12期才能使用免息券；</p>
+                        <p class="z-item">2、放款后免息券自动使用，只能用于固定最后一期/二期/三期的还款；</p>
+                        <p class="z-item">3、用户提前还款或逾期还款，免息券自动作废；</p>
+                        <p class="z-item">4、用户获得的10元话费将会在2个工作日内，充值到您注册员动力平台的手机号码；</p>
+                        <p class="z-item">5、用户获得iPhone7后，必须在30天内申请借款，未申请则视为放弃奖品；</p>
+                        <p class="z-item">6、活动有效期至2016年12月31日，所有奖品过期即作废；</p>
+                        <p class="z-item">7、本活动最终解释权利归员动力平台所有。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <script>
-        
+        $(function(){
+            $('.user_rules').on('click',function(){
+                var dialogScroll = new IScroll('.z-txt', {
+                    probeType: 3,
+                    scrollbars: true,
+                    mouseWheel: true,
+                    interactiveScrollbars: true,
+                    shrinkScrollbars: 'scale',
+                    fadeScrollbars: true,click:true
+                });
+                $('.rule').addClass('dialog_show');
+                dialogScroll.refresh();
+            });
+            $('.rule .close_btn').on('click',function(){
+                $('.rule').removeClass('dialog_show');
+            });
+        });
     </script>
 </body>
 </html>
