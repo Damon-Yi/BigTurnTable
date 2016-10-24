@@ -172,7 +172,7 @@
     .tongxunlu .back-btn:after {content: " ";display: inline-block;-webkit-transform: rotate(45deg);transform: rotate(45deg);height: 6px;width: 6px;border-width:0 0 2px 2px;border-color: #fff;border-style: solid;position: relative;top: -2px;position: absolute;top: 50%;right: 12px;margin-top: -4px;}
     
     /*加载动画*/
-    .loader {display: inline-block;font-size: 0px;padding: 0px;position: fixed;z-index: 21;top:0;bottom: 0;left: 0;right: 0;}
+    .loader {display: inline-block;font-size: 0px;padding: 0px;position: fixed;z-index: 21;top:0;bottom: 0;left: 0;right: 0;display: none;}
     .loader .loader_bg{position:absolute;top:0;bottom: 0;left: 0;right: 0;background: rgba(0,0,0,0.3);}
     .loader .span_wrap{position:absolute;top: 50%;left: 50%;transform: translate(-50%,-50%);-webkit-transform: translate(-50%,-50%);}
     .loader .span_wrap span {vertical-align: middle;border-radius: 100%;display: inline-block;width: 12px;height: 12px;margin: 0 2px;-webkit-animation: loader 0.8s linear infinite alternate;animation: loader 0.8s linear infinite alternate;}
@@ -525,22 +525,38 @@
 
         /*loading*/
         var loading = function(){
-            var loader=document.createElement("div"),
+            me = {}
+            me.init = function(){
+                me.loader=document.createElement("div"),
                 loader_bg=document.createElement("div"),
                 span_wrap=document.createElement("div");
 
-            loader.className="loader";
-            loader_bg.className="loader_bg";
-            span_wrap.className="span_wrap";
-            for(var i=0;i<5;i++){
-                var span=document.createElement("span");
-                span_wrap.appendChild(span);   
+                me.loader.className="loader";
+                loader_bg.className="loader_bg";
+                span_wrap.className="span_wrap";
+                for(var i=0;i<5;i++){
+                    var span=document.createElement("span");
+                    span_wrap.appendChild(span);   
+                }
+                me.loader.appendChild(loader_bg); 
+                me.loader.appendChild(span_wrap); 
+                document.body.appendChild(me.loader);
             }
-            loader.appendChild(loader_bg); 
-            loader.appendChild(span_wrap); 
-            document.body.appendChild(loader);
+            me.show = function(){
+                me.loader.style.display = 'block';
+            }
+            me.hide = function(){
+                me.loader.style.display = 'none';
+            }
+            me.destroy = function(){
+                document.body.removeChild(me.loader);
+            }
+            me.init();
+            return me;
         }
-        loading();
+        
+        var loader = new loading();
+        loader.show();
         
         /*分享*/
         $('.a_share').on('click',function(){
