@@ -200,6 +200,43 @@
     </script>
 </head>
 <body onload="loaded()">
+    <script>
+        /*loading*/
+        var loading = function(){
+            me = {}
+            me.init = function(){
+                me.loader=document.createElement("div"),
+                loader_bg=document.createElement("div"),
+                span_wrap=document.createElement("div");
+
+                me.loader.className="loader";
+                loader_bg.className="loader_bg";
+                span_wrap.className="span_wrap";
+                for(var i=0;i<5;i++){
+                    var span=document.createElement("span");
+                    span_wrap.appendChild(span);   
+                }
+                me.loader.appendChild(loader_bg); 
+                me.loader.appendChild(span_wrap); 
+                console.log(document.body);
+                document.body.appendChild(me.loader);
+            }
+            me.show = function(){
+                me.loader.style.display = 'block';
+            }
+            me.hide = function(){
+                me.loader.style.display = 'none';
+            }
+            me.destroy = function(){
+                document.body.removeChild(me.loader);
+            }
+            me.init();
+            return me;
+        }
+        
+        var loader = new loading();
+        loader.show();
+    </script>
     <article id="body-wrapper">
         <div>
             <div class="cont-wrap">
@@ -207,7 +244,7 @@
                     <img class="turn-table-bg" src="images/table-bg.png" alt="">
                     <div class="turn-table">
                         <div class="t-pointer"><img src="images/pointer.png" alt=""></div>
-                        <div class="t-rotate" id="rotate"><img src="images/table.png" alt=""></div>
+                        <div class="t-rotate" id="rotate"><img src="images/table.png" alt="" onload="console.log(loader);loader.hide();"></div>
                         <img class="table-shadow" src="images/table-shadow.png" alt="">
                     </div>
                 </div>
@@ -556,7 +593,7 @@
         }
         
         var loader = new loading();
-        loader.show();
+        //loader.show();
         
         /*分享*/
         $('.a_share').on('click',function(){
