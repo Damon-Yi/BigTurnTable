@@ -92,7 +92,7 @@
     .register .phone{}
     .register .valid_code{padding-right: 1.4rem;}
     .register .get_valid_code{width: 1.2rem;border: 1px solid #0fc1da;color: #0fc1da !important;background-color: #fff;text-align: center;font-size: 0.18rem;height: 0.5rem;position: absolute;right: 0.18rem;top: 0.23rem;}
-    .register .r_btn{width: 4.1rem;height:0.82rem;line-height:0.82rem;background-color:#0fc1da;font-size: 0.3rem;margin: 0.3rem auto;color: #fff;}
+    .register .r_btn{width:100%;height:0.82rem;line-height:0.82rem;background-color:#0fc1da;font-size: 0.3rem;margin: 0.3rem auto;color: #fff;}
     .register .r_suc{text-align: center;display: none;}
     .register .r_suc>img{width: 1.6rem;height: 1.6rem;margin: 0.8rem 0 0.1rem 0;}
     .register .r_suc>p{font-size: 0.36rem;color: #333;margin: 0.1rem 0 0.6rem 0;}
@@ -108,6 +108,8 @@
     .register .company_wrap{text-align: left;color: #999;font-size: 0.26rem;}
     .register .company_wrap:before{content: '';position: absolute;border-color: #999;border-style: solid;border-width: 2px 2px 0 0;top:50%;width: 10px;height: 10px;display: block;transform: rotate(45deg);right: 10px;margin-top: -5px;}
     .register .company{position: absolute;top: 0;left: 0;}
+    .register .r_protocal{text-align: left;margin-top: 10px;color: #999;font-size:0.26rem;}
+    .register .r_protocal>a{color: #0fc1da;}
     /*规则*/
     .rule{}
     .rule .dialog_panel{width: 5.88rem;margin-left:-2.94rem;height:6.6rem;top: 1.1rem;}
@@ -361,6 +363,7 @@
                     <div class="input_wrap company_wrap"><div class="company">选择所属企业</div><input type="hidden" name="company_id"></div>
                     <div class="input_wrap"><input class="phone" type="tel" placeholder="手机号码" pat='/^(((13[0-9]{1})|(15[0-9]{1})|(17[0-9]{1})|(18[0-9]{1}))+\d{8})$/'></div>
                     <div class="input_wrap"><input class="valid_code" type="text" placeholder="手机验证码"><input class="get_valid_code" type="button" value="获取"></div>
+                    <p class="r_protocal">注册即视为同意<a href="javascript:;">《员动力注册协议》</a></p>
                     <div class="r_btn com_btn_1">马上注册</div>  
                 </form>
                 <div class="r_suc">
